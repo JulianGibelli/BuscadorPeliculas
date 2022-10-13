@@ -1,0 +1,35 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+main{
+    background-color:#023047;
+    background-image: url("./assets/wave.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.card{
+    height: max-content;
+    border: solid 4px red;
+}
+
+.card-body{
+    background-color: #ffb703;
+    border: solid 2px black;    
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; 
+    
+    
+}
+
+.contenedor-secundario{
+    display: flex;
+    flex-direction: column;   
+    flex: 1;    
+    justify-content: end;
+   
+}
+
+
