@@ -52,6 +52,7 @@ function busqueda(parametroBusqueda) {
   }
 }
 
+//inicio de aplicacion
 function main() {
   recorrerPeliculas(listaPeliculas);
 
