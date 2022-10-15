@@ -58,12 +58,9 @@ function main() {
 
   const inputBusqueda = document.querySelector("#search-busqueda-pelis");
 
-  inputBusqueda.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      // code for enter
-      console.log(e.target.value);
-      busqueda(e.target.value);
-    }
+  inputBusqueda.addEventListener("keyup", (e) => {
+    
+    busqueda(e.target.value);
   });
 }
 
