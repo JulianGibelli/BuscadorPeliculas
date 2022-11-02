@@ -1,32 +1,65 @@
 //array de carrito de peliculas faveadas
-const cart = []
+const cart = [];
+
+
+
+//alerta success
+const alertaSuccess = () => {
+  Swal.fire({
+    icon: "success",
+    text: "Pelicula faveada con exito!",
+  });
+};
+//alerta error
+const alertaError = () => {
+  Swal.fire({
+    icon: "error",
+    text: "Pelicula ya guardada!",
+  });
+};
+
 
 //funcion encargada de guardar las peliculas faveadas en el localstorage
-function saveCart(){
-  if (cart.length > 0) {
-		localStorage.setItem("cart", JSON.stringify(cart));
-	}
+function saveCart(peliId) {
+ 
+  if (localStorage.getItem("cart"))/* si ya entre previamente al localstorage */ {
+		let loadedCart = JSON.parse(localStorage.getItem("cart"));
+    console.log("entre previamente al localstorage")
+    console.log(loadedCart) //array de objetos
+		let estaOno =  loadedCart.some(peli => peli.id === peliId)
+    console.log(estaOno)
+
+    if(estaOno){
+      alertaError()
+    }else{
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alertaSuccess()
+    }
+}else{
+  //si es la primera vez que entro
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alertaSuccess()
+}
+
 }
 
 //funcion encargada de agregar la pelicula correspondiente por ID en el carrito
 //recibe un id y filtra segun el en la lista de peliculas para luego agregarla
-function addToCart(peliId){
-  const peliBuscadaPorId = busquedaPeliPorId(peliId)
-  cart.push(peliBuscadaPorId);
-  saveCart();
+function addToCart(peliId) {
+  const peliBuscadaPorId = busquedaPeliPorId(peliId);
+  cart.push(peliBuscadaPorId); //me guarda localmente las pelis en cart
+  saveCart(peliId); //busca guardar en localstorage mi cart
 }
 
 //tomo los botones de like desde el html para aplicarle funcionalidad al apretarlos
-function likeButtons(){
-  const likeButtonsEls = document.querySelectorAll(".nuevoBtn")
-  likeButtonsEls.forEach((btn)=>{
-    btn.addEventListener("click",()=>{
-      addToCart(btn.id)
-    })
-  })
-
+function likeButtons() {
+  const likeButtonsEls = document.querySelectorAll(".nuevoBtn");
+  likeButtonsEls.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      addToCart(btn.id);
+    });
+  });
 }
-
 
 const removeChilds = (parent) => {
   while (parent.lastChild) {
@@ -72,11 +105,11 @@ function drawCards(peli) {
     `;
 }
 
-function busquedaPeliPorId(idBusqueda){
-  return pelisFiltradaPorId = listaPeliculas.find((peli)=>peli.id == idBusqueda)
-  
+function busquedaPeliPorId(idBusqueda) {
+  return (pelisFiltradaPorId = listaPeliculas.find(
+    (peli) => peli.id == idBusqueda
+  ));
 }
-
 
 function busqueda(parametroBusqueda) {
   console.log(parametroBusqueda);
@@ -97,12 +130,10 @@ function main() {
   const inputBusqueda = document.querySelector("#search-busqueda-pelis");
 
   inputBusqueda.addEventListener("keyup", (e) => {
-    
     busqueda(e.target.value);
   });
 
-  likeButtons()
-
+  likeButtons();
 }
 
 main();
