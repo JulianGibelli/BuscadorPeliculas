@@ -1,5 +1,5 @@
 //array de carrito de peliculas faveadas
-const cart = [];
+let cart = [];
 
 
 
@@ -21,17 +21,20 @@ const alertaError = () => {
 
 //funcion encargada de guardar las peliculas faveadas en el localstorage
 function saveCart(peliId) {
- 
+  
   if (localStorage.getItem("cart"))/* si ya entre previamente al localstorage */ {
 		let loadedCart = JSON.parse(localStorage.getItem("cart"));
     console.log("entre previamente al localstorage")
     console.log(loadedCart) //array de objetos
-		let estaOno =  loadedCart.some(peli => peli.id === peliId)
+    console.log(peliId)
+    
+		let estaOno =  loadedCart.some(peli => peli.id === parseInt(peliId))
     console.log(estaOno)
-
+    
     if(estaOno){
       alertaError()
     }else{
+      localStorage.clear()
       localStorage.setItem("cart", JSON.stringify(cart));
       alertaSuccess()
     }
@@ -48,6 +51,13 @@ function saveCart(peliId) {
 function addToCart(peliId) {
   const peliBuscadaPorId = busquedaPeliPorId(peliId);
   cart.push(peliBuscadaPorId); //me guarda localmente las pelis en cart
+
+  //convierto a set mi array para evadir incluir pelis repetidas
+  jsonObject = cart.map(JSON.stringify);      
+  uniqueSet = new Set(jsonObject); //convierto a SET
+  cart = Array.from(uniqueSet).map(JSON.parse); //luego convierto nueamente a array sin duplicados
+
+
   saveCart(peliId); //busca guardar en localstorage mi cart
 }
 
