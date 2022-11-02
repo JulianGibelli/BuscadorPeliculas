@@ -1,3 +1,33 @@
+//array de carrito de peliculas faveadas
+const cart = []
+
+//funcion encargada de guardar las peliculas faveadas en el localstorage
+function saveCart(){
+  if (cart.length > 0) {
+		localStorage.setItem("cart", JSON.stringify(cart));
+	}
+}
+
+//funcion encargada de agregar la pelicula correspondiente por ID en el carrito
+//recibe un id y filtra segun el en la lista de peliculas para luego agregarla
+function addToCart(peliId){
+  const peliBuscadaPorId = busquedaPeliPorId(peliId)
+  cart.push(peliBuscadaPorId);
+  saveCart();
+}
+
+//tomo los botones de like desde el html para aplicarle funcionalidad al apretarlos
+function likeButtons(){
+  const likeButtonsEls = document.querySelectorAll(".nuevoBtn")
+  likeButtonsEls.forEach((btn)=>{
+    btn.addEventListener("click",()=>{
+      addToCart(btn.id)
+    })
+  })
+
+}
+
+
 const removeChilds = (parent) => {
   while (parent.lastChild) {
     parent.removeChild(parent.lastChild);
@@ -30,7 +60,9 @@ function drawCards(peli) {
                     <span>${peli.tags[1]}</span>                
                 </div>
                 <div> 
-                    <a href="#" class="btn btn-primary nuevoBtn">Go somewhere</a>
+                    <a href="#" id="${peli.id}" class="btn btn-primary nuevoBtn"><span class="material-symbols-outlined">
+                    favorite
+                    </span></a>
                 </div>
               </div>
             </div>
@@ -39,6 +71,12 @@ function drawCards(peli) {
     
     `;
 }
+
+function busquedaPeliPorId(idBusqueda){
+  return pelisFiltradaPorId = listaPeliculas.find((peli)=>peli.id == idBusqueda)
+  
+}
+
 
 function busqueda(parametroBusqueda) {
   console.log(parametroBusqueda);
@@ -62,6 +100,9 @@ function main() {
     
     busqueda(e.target.value);
   });
+
+  likeButtons()
+
 }
 
 main();
