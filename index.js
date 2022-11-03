@@ -2,46 +2,51 @@
 let cart = [];
 
 
-
-//alerta success
-const alertaSuccess = () => {
+//alerta
+const alerta = (icono,texto) => {
   Swal.fire({
-    icon: "success",
-    text: "Pelicula faveada con exito!",
-  });
-};
-//alerta error
-const alertaError = () => {
-  Swal.fire({
-    icon: "error",
-    text: "Pelicula ya guardada!",
+    icon: icono,
+    text: texto,
   });
 };
 
+
+//funcion encargada de decirme si hay carrito en localstorage o no
+const hayCarritoPrevio = ()=>{
+  if(localStorage.getItem("cart")){
+    return true
+  }else{
+    return false
+  }
+}
+
+//funcion encargada de devolverme lo cargado en localstorage
+
+function loadedCart(){
+  return JSON.parse(localStorage.getItem("cart"));
+ 
+}
 
 //funcion encargada de guardar las peliculas faveadas en el localstorage
 function saveCart(peliId) {
   
   if (localStorage.getItem("cart"))/* si ya entre previamente al localstorage */ {
-		let loadedCart = JSON.parse(localStorage.getItem("cart"));
-    console.log("entre previamente al localstorage")
-    console.log(loadedCart) //array de objetos
-    console.log(peliId)
+		let carritoCargado = loadedCart();   
     
-		let estaOno =  loadedCart.some(peli => peli.id === parseInt(peliId))
-    console.log(estaOno)
+		let estaOno =  carritoCargado.some(peli => peli.id === parseInt(peliId))
+    
     
     if(estaOno){
-      alertaError()
+      alerta("error","pelicula ya guardada!")
     }else{
       localStorage.clear()
       localStorage.setItem("cart", JSON.stringify(cart));
-      alertaSuccess()
+      alerta("success","pelicula faveada con exito!")
     }
 }else{
   //si es la primera vez que entro
   localStorage.setItem("cart", JSON.stringify(cart));
-  alertaSuccess()
+  alerta("success","Pelicula guardada con exito!")
 }
 
 }
@@ -122,12 +127,11 @@ function busquedaPeliPorId(idBusqueda) {
 }
 
 function busqueda(parametroBusqueda) {
-  console.log(parametroBusqueda);
-  console.log(listaPeliculas);
+  
   const pelisFiltradasPorTitulo = listaPeliculas.filter((peli) =>
     peli.title.toLowerCase().includes(parametroBusqueda.toLowerCase())
   );
-  console.log(pelisFiltradasPorTitulo);
+  
   if (pelisFiltradasPorTitulo.length > 0) {
     recorrerPeliculas(pelisFiltradasPorTitulo);
   }
@@ -144,6 +148,22 @@ function main() {
   });
 
   likeButtons();
+
+  const favMoviesCart = document.querySelector("#favMovies")
+  favMoviesCart.addEventListener("click",(e)=>{
+    e.preventDefault()
+    //tengo que ver si ya tengo carrito o no guardado
+    //si no tengo, debo ejecutar una alerta indicando que no hay peliculas guardadas
+    //si hay carrito debo renderizar las peliculas alli guardadas
+    console.log("entre por click")
+    if (hayCarritoPrevio()) {
+      //recorre y renderiza las pelis de alli
+      recorrerPeliculas(loadedCart())
+    } else {
+      alerta("error","No tenes peliculas guardadas!")
+    }
+  })
+
 }
 
 main();
