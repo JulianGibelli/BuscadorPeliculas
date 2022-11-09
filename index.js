@@ -171,7 +171,12 @@ function main() {
   const inputBusqueda = document.querySelector("#search-busqueda-pelis");
 
   inputBusqueda.addEventListener("keyup", (e) => {
-    busqueda(e.target.value);
+    
+    if (e.target.value != "") {
+      busqueda(e.target.value);      
+    } else {
+      window.location.reload()
+    }
   });
 
 
