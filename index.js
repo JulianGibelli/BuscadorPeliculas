@@ -1,6 +1,9 @@
 //array de carrito de peliculas faveadas
 let cart = [];
 
+//array de peliculas que voy a cargar luego de leer mi archivo JSON
+let listaPeliculas = []
+
 
 //alerta
 const alerta = (icono,texto) => {
@@ -46,7 +49,7 @@ function saveCart(peliId) {
 }else{
   //si es la primera vez que entro
   localStorage.setItem("cart", JSON.stringify(cart));
-  alerta("success","Pelicula guardada con exito!")
+  alerta("success","Pelicula faveada con exito!")
 }
 
 }
@@ -137,9 +140,33 @@ function busqueda(parametroBusqueda) {
   }
 }
 
+//funcion encargada de levantar el JSON y popular mi listaPeliculas. Es asincronica ya que tiene que interactuar con algo externo.
+
+async function leerBD(){
+  //intenta ir y leer el archivo json y parsearlo
+  //si podes, populame mi listadepelis con lo que leiste
+  //y luego renderizame las cards con eso
+  try {
+    const response = await fetch("pelis.json")
+    const data = await response.json()
+    data.forEach((peli)=>{listaPeliculas.push(peli)})
+    recorrerPeliculas(listaPeliculas);
+    
+  } catch (error) {
+    //si llegase a haber un error se dispara un sweetalert que indica falla
+    alerta("error","Hubo un inconveniente con el servidor, pruebe mas tarde!")
+  }finally{
+    //luego si todo salio bien o mal, se les da utilidad a los botones de likeado
+    likeButtons();
+  }
+}
+
 //inicio de aplicacion
 function main() {
-  recorrerPeliculas(listaPeliculas);
+
+  //se inicia yendo a leer el archivo JSON que contiene la info de las pelis
+  leerBD()
+
 
   const inputBusqueda = document.querySelector("#search-busqueda-pelis");
 
@@ -147,7 +174,6 @@ function main() {
     busqueda(e.target.value);
   });
 
-  likeButtons();
 
   const favMoviesCart = document.querySelector("#favMovies")
   favMoviesCart.addEventListener("click",(e)=>{
@@ -162,6 +188,7 @@ function main() {
     } else {
       alerta("error","No tenes peliculas guardadas!")
     }
+    likeButtons()
   })
 
 }
